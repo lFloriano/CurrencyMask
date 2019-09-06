@@ -1,0 +1,107 @@
+<html>
+	<head>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		<script>
+
+			function Formatar(conteudoOriginal){
+				var conteudoFormatado = [];
+
+				//remove formatação
+				conteudoOriginal = conteudoOriginal.replace("R", "").replace("r", "").replace("$", "").replace(/\./g,"");
+				conteudoOriginal = String(parseInt(conteudoOriginal) || 0); //verificar
+
+				//insere ponto a cada 3 caracteres
+				var len = conteudoOriginal.length - 1;
+				var cont = 0;
+
+				for(var i = len; i >= 0; i--){
+				 	conteudoFormatado.unshift(conteudoOriginal[i]);
+					cont ++;
+
+					if(cont == 3 && i != 0){
+						conteudoFormatado.unshift(".");
+						cont = 0;
+					}
+				 }
+
+				 conteudoFormatado = conteudoFormatado.length != 0 ? "R$" + conteudoFormatado.join("") : "";
+
+				 return conteudoFormatado;
+			}
+
+			function Mascarar(obj){
+				//remover ondrop e onpaste
+
+				$(obj).keyup(function(e){
+					var keyNum = e.keyCode;
+					var conteudoOriginal = obj.value;
+					var conteudoFormatado = [];
+
+					console.log("key " + e.key);
+
+					if((keyNum >= 48 && keyNum <= 57) || (keyNum >= 96 && keyNum <= 105) || keyNum == 8){
+						
+						obj.value = Formatar(conteudoOriginal);
+					}
+					else{
+						//bloqueia caracteres indesejados
+						obj.value = Formatar(obj.value.replace(e.key, ""));
+
+					}
+				});
+			}
+			// function mascarar(obj){
+			// 	//remover ondrop e onpaste
+
+			// 	$(obj).keyup(function(e){
+			// 		var keyNum = e.keyCode;
+			// 		var conteudoOriginal = obj.value;
+			// 		var conteudoFormatado = [];
+
+			// 		console.log("key " + e.key);
+
+			// 		if((keyNum >= 48 && keyNum <= 57) || (keyNum >= 96 && keyNum <= 105) || keyNum == 8){
+						
+			// 			//remove formatação
+			// 			conteudoOriginal = conteudoOriginal.replace("R", "").replace("r", "").replace("$", "").replace(/\./g,"");
+			// 			//conteudoOriginal = String(parseInt(conteudoOriginal) || 0); //verificar
+
+			// 			//insere ponto a cada 3 caracteres
+			// 			var len = conteudoOriginal.length - 1;
+			// 			var cont = 0;
+
+			// 			for(var i = len; i >= 0; i--){
+			// 			 	conteudoFormatado.unshift(conteudoOriginal[i]);
+			// 				cont ++;
+
+			// 				if(cont == 3 && i != 0){
+			// 					conteudoFormatado.unshift(".");
+			// 					cont = 0;
+			// 				}
+			// 			 }
+
+			// 			obj.value = (conteudoFormatado.length != 0) ? "R$" + conteudoFormatado.join("") : "";
+			// 		}
+			// 		else{
+			// 			//bloqueia caracteres indesejados
+			// 			obj.value = obj.value.replace(e.key, "");
+			// 		}
+			// 	});
+			// }
+		</script>
+		<script>
+		    $(document).ready(function () {
+		        $("input[data-moeda=true]").each(function () {
+		            this.addEventListener("keyup", Mascarar(this));
+		            $(this).attr("onpaste", "return false");
+		            $(this).attr("ondrop", "return false");
+		        });
+		    });
+	</script>
+	</head>
+	<body>
+	<!-- 	<input ondrop="return false" onpaste="return false" type="text" oninput="Mascarar(this)" /> -->
+	<input type="text" data-moeda="true" />
+		<div id="mirror"></div>
+	</body>
+</html>
